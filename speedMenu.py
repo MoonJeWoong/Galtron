@@ -60,12 +60,16 @@ def buttonAction(stats, selectedName, setting):
         stats.setGameLoop('settingsMenu')
     elif selectedName == 'menu':
 <<<<<<< HEAD
+<<<<<<< HEAD
          stats.setGameLoop('settingsMenu')
 
 =======
 =======
         stats.setGameLoop('settingsMenu')
 >>>>>>> f85a50e374a3ee9445353e8a5660e311f34dfb26
+=======
+        stats.setGameLoop('settingsMenu')
+>>>>>>> 1846737c17430f275f0bb7158e3868892f9209d5
     elif selectedName == 'quit':
         pg.time.delay(300)
         sys.exit()

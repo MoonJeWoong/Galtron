@@ -58,12 +58,16 @@ def runGame():
     bMenu.addButton("loud","LOUD")
     bMenu.addButton("low","LOW")
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 78ecfa2143bfd3ecfc66c1265fc3edf149138738
 =======
 
 >>>>>>> f85a50e374a3ee9445353e8a5660e311f34dfb26
+=======
+
+>>>>>>> 1846737c17430f275f0bb7158e3868892f9209d5
     mainMenuButtons = ["play", "about", "settings", "quit"] # delete "twoPlay"
     playMenuButtons = ["grey", "red", "blue", "menu", "quit"]
     levelMenuButtons = ["hard", "normal", "back", "quit"]
@@ -77,6 +81,7 @@ def runGame():
     settingsMenuButtons = ["menu", "invert","speed setting","quit"]
     speedButtons = ["fast","middle","slow"]
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 78ecfa2143bfd3ecfc66c1265fc3edf149138738
 
 =======
@@ -84,6 +89,11 @@ def runGame():
     speedButtons = ["fast","middle","slow","menu"]
     
 >>>>>>> f85a50e374a3ee9445353e8a5660e311f34dfb26
+=======
+    settingsMenuButtons = ["menu", "invert","speed setting","quit"]
+    speedButtons = ["fast","middle","slow","menu"]
+    
+>>>>>>> 1846737c17430f275f0bb7158e3868892f9209d5
     bgManager = BackgroundManager(screen)
     bgManager.setFillColor((0, 0, 0))
     bgManager.addBackground("universe_1", "gfx/backgrounds/stars_back.png", 0, 1)
