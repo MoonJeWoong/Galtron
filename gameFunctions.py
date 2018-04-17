@@ -7,6 +7,7 @@ from time import sleep
 from alien import Alien
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import random
 =======
 from settings import Settings
@@ -17,6 +18,13 @@ import random
 pauseBtnState = 1
 back = False
 =======
+=======
+from settings import Settings
+import random
+
+pauseBtnState = 1
+back = False
+>>>>>>> f85a50e374a3ee9445353e8a5660e311f34dfb26
 from bullet import Bullet, SpecialBullet
 from item import Item
 >>>>>>> b4c5cc443aaefe6df257f5b363d3427096b05c7c
@@ -128,8 +136,9 @@ def checkKeydownEvents(event, setting, screen, stats, sb, ship, aliens, bullets,
         useUltimate(setting, screen, stats, bullets, stats.ultimatePattern, ship)
         # Check for pause key
     elif event.key == pg.K_p or event.key == 181:
-        sounds.paused.play()
-        pause(stats)
+        if not stats.paused and stats.gameActive:
+            sounds.paused.play()
+            pause(stats)
         # Add speed control key
     elif event.key == pg.K_q or event.key == 172:
         setting.halfspeed()
@@ -314,11 +323,6 @@ def changeFleetDir(setting, aliens):
                 alien.rect.y += setting.fleetDropSpeed
             elif setting.gameLevel == 'hard':
                 alien.rect.y += (setting.fleetDropSpeed + 3)
-        else:
-            if alien.rect.y < int(setting.screenHeight * 0.8):
-                alien.rect.y += 50
-            else:
-                alien.rect.y -= 50
     setting.fleetDir *= -1
 
 
@@ -360,6 +364,11 @@ def updateInvincibility(setting, screen, ship):
             isurf.set_alpha(200)
             screen.blit(isurf, (ship.rect.x, ship.rect.y))
             screen.blit(shieldimg, (ship.rect.x-13, ship.rect.y))
+
+def updateInvineffect(setting,screen,ship):
+	if pg.time.get_ticks() - setting.newStartTime < setting.invincibileTime:
+		image = pg.image.load('gfx/image_shield.png')
+		screen.blit(image, (ship.rect.x -7 , ship.rect.y ))
 
 def updateAliens(setting, stats, sb, screen, ship, aliens, bullets, eBullets):
     """Update the aliens"""
@@ -433,11 +442,7 @@ def updateItems(setting, screen, stats, sb, ship, aliens, bullets, eBullets, ite
                     setting.alienSpeed *= 0.5
                     setting.alienbulletSpeed *= 0.5
                     setting.fleetDropSpeed *= 0.5
-<<<<<<< HEAD
-                    sounds.slowdown_sound.play()
-=======
                     sounds.slow_sound.play(-1)
->>>>>>> 78ecfa2143bfd3ecfc66c1265fc3edf149138738
             elif item.type == 3:
                 setting.newStartTime = pg.time.get_ticks()
                 sounds.shield_sound.play()
@@ -453,11 +458,7 @@ def updateSlowtime(setting):
             setting.alienbulletSpeed *= 2
             setting.fleetDropSpeed *= 2
             setting.newItemSlowTime = 0
-<<<<<<< HEAD
-            sounds.slowdown_sound.stop()
-=======
             sounds.slow_sound.stop()
->>>>>>> 78ecfa2143bfd3ecfc66c1265fc3edf149138738
 
 def updateSpeedtime(setting):
     if setting.newItemSpeedTime !=0:
@@ -473,7 +474,7 @@ def checkBulletAlienCol(setting, screen, stats, sb, ship, aliens, bullets, eBull
     collisions = pg.sprite.groupcollide(aliens, bullets, False, False)
     collisions.update(pg.sprite.groupcollide(aliens, charged_bullets, False, False))
     if collisions:
-        sounds.enemy_explosion_sound.play()
+        sounds.enemy_damaged_sound.play()
 
         for alien in collisions :
             #charged_bullet bgManager
@@ -498,8 +499,8 @@ def checkBulletAlienCol(setting, screen, stats, sb, ship, aliens, bullets, eBull
                     createItem(setting, screen, stats, alien.rect.x, alien.rect.y, 3, items)
                 if setting.probabilityHeal+setting.probabilityTime+setting.probabilityShield<i<=setting.probabilityHeal+setting.probabilityTime+setting.probabilityShield+setting.probabilitySpeed:
                     createItem(setting, screen, stats, alien.rect.x, alien.rect.y, 4, items)
-
                 aliens.remove(alien)
+
 
         # Increase the ultimate gauge, upto 100
         if not collisions[alien][0].isUltimate:
@@ -568,6 +569,10 @@ def updateUltimateGauge(setting, screen, stats, sb):
     else:
         pg.draw.rect(screen, (255, 255, 255), (x, y, 100, 12), 0)
         pg.draw.rect(screen, (0, 255, 255), (x, y, gauge, 12), 0)
+    ultimatefont = pg.font.Font('Fonts/Square.ttf', 20)
+    ultimateStr = ultimatefont.render("Ultimate",True, (255,255,255), setting.bgColor)
+    ultimateStrpos = (x, y+12)
+    screen.blit(ultimateStr,ultimateStrpos)
 
 
 def UltimateDiamondShape(setting, screen, stats, sbullets, damage):
@@ -623,6 +628,10 @@ def drawChargeGauge(setting, screen, ship, sb):
     pg.draw.rect(screen, (255, 255, 255), (x, y, 100, 10), 0)
     pg.draw.rect(screen, color, (x, y, ship.chargeGauge, 10), 0)
 
+    chargefont = pg.font.Font('Fonts/Square.ttf', 20)
+    chargeStr = chargefont.render("Charge",True, (255,255,255), setting.bgColor)
+    chargeStrpos = (x, y+10)
+    screen.blit(chargeStr,chargeStrpos)
 
 
 def drawBossHP(setting, screen):
@@ -677,6 +686,9 @@ def updateScreen(setting, screen, stats, sb, ship, aliens, bullets, eBullets, ch
     #Shield if ship is invincibile
     updateInvincibility(setting, screen, ship)
 
+	#shield effect of the ship
+    updateInvineffect(setting,screen,ship)
+
     # Update Item_time
     updateSlowtime(setting)
     updateSpeedtime(setting)
@@ -699,7 +711,7 @@ def updateScreen(setting, screen, stats, sb, ship, aliens, bullets, eBullets, ch
 
     # Draw the play button if the game is inActive
     if not stats.gameActive:
-        if (stats.shipsLeft < 1):
+        if (stats.shipsLeft < 1) and not stats.paused:
             bMenu.setMenuButtons(gameOverButtons)
             scoreImg = pg.font.Font('Fonts/Square.ttf', 50).render("Score: " + str(stats.score), True, (0, 0, 0),
                                                                    (255, 255, 255))
